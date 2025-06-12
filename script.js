@@ -1,5 +1,12 @@
-// Paste your firebaseConfig object here
-// const firebaseConfig = { /* ... your config ... */ };
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "your-app-id"
+};
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
