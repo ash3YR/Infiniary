@@ -22,11 +22,11 @@ body {
     max-width: 21cm; /* Standard A4 width */
     min-height: 29.7cm; /* Standard A4 height */
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* For Safari */
     border-radius: 15px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 8px 32px 0 rgba(30, 122, 162, 0.37);
     border: 1px solid rgba(255, 255, 255, 0.18);
     padding: 1.5rem;
 }
@@ -69,13 +69,13 @@ body {
 .timestamp {
     font-size: 0.9em;
     color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     display: inline-block;
     padding: 0.4rem 1.2rem;
     border-radius: 20px;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.4);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2),
                 inset 0 0 20px rgba(255, 255, 255, 0.1);
     font-weight: 600;
@@ -101,7 +101,7 @@ body {
 /* Placeholder for empty paragraphs */
 .content p:empty::before {
     content: 'Start writing here...';
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(139, 139, 139, 0.4);
     pointer-events: none;
     /* Position relative to the paragraph's content box, aligning with the first ruled line */
     top: 0.5em; /* Adjusted for new line-height */
@@ -111,7 +111,7 @@ body {
 
 .content p.has-text {
     background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 100% 2.0em; /* Matches new line-height */
+    background-size: 100% 2.1em; /* Matches new line-height */
     /* Adjusted for 16px font and 2.0em line-height. */
     background-position: 0 1.25em; /* Increased slightly */
 }
@@ -269,11 +269,11 @@ html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem;
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     border-radius: 10px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
@@ -286,7 +286,53 @@ html {
 #user-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
     gap: 1rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+}
+
+#user-name {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: text;
+    outline: none;
+}
+
+#user-name:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#user-name:focus {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+}
+
+#user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+#user-photo:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
 }
 
 .google-btn {

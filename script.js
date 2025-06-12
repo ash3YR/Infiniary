@@ -14,6 +14,12 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Configure Google Auth Provider
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({
+    prompt: 'select_account'
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const content = document.querySelector('.content');
     
@@ -21,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInfoBar = document.getElementById('user-info-bar');
     const authSection = document.getElementById('auth-section');
     const userInfo = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userPhoto = document.getElementById('user-photo');
     const logoutBtn = document.getElementById('logout-btn');
     const userEmailSpan = document.getElementById('user-email');
     const googleSignInBtn = document.getElementById('google-signin-btn');
@@ -135,12 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Firebase Authentication Functions
     async function signInWithGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
         try {
-            await auth.signInWithPopup(provider);
+            const result = await auth.signInWithPopup(provider);
+            console.log('Sign-in successful:', result.user.email);
         } catch (error) {
             console.error('Google Sign-in Error:', error);
-            alert('Error signing in with Google: ' + error.message);
+            if (error.code === 'auth/popup-blocked') {
+                alert('Please allow popups for this website to sign in with Google.');
+            } else if (error.code === 'auth/cancelled-popup-request') {
+                console.log('Sign-in popup was cancelled');
+            } else {
+                alert('Error signing in with Google: ' + error.message);
+            }
         }
     }
 
@@ -205,14 +219,64 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', logout);
     }
 
+    // Handle username editing
+    userName.addEventListener('blur', async () => {
+        if (!currentUserId) return;
+        
+        const newName = userName.textContent.trim();
+        if (newName) {
+            try {
+                await db.collection('users').doc(currentUserId).set({
+                    displayName: newName
+                }, { merge: true });
+                console.log('Username updated successfully');
+            } catch (error) {
+                console.error('Error updating username:', error);
+            }
+        }
+    });
+
+    // Prevent Enter key in username
+    userName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            userName.blur();
+        }
+    });
+
     // Auth state listener
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async (user) => {
         if (user) {
             // User is signed in
             currentUserId = user.uid;
             authSection.style.display = 'none';
             userInfo.style.display = 'flex';
-            userEmailSpan.textContent = user.email;
+
+            // Set user photo
+            if (user.photoURL) {
+                userPhoto.src = user.photoURL;
+            } else {
+                userPhoto.src = 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/anonymous.png';
+            }
+
+            // Get or set username
+            try {
+                const userDoc = await db.collection('users').doc(currentUserId).get();
+                if (userDoc.exists && userDoc.data().displayName) {
+                    userName.textContent = userDoc.data().displayName;
+                } else {
+                    // Set default username from email
+                    const defaultName = user.email.split('@')[0];
+                    userName.textContent = defaultName;
+                    // Save default name to Firestore
+                    await db.collection('users').doc(currentUserId).set({
+                        displayName: defaultName
+                    });
+                }
+            } catch (error) {
+                console.error('Error getting/setting username:', error);
+                userName.textContent = user.email.split('@')[0];
+            }
 
             // Load diary for the logged-in user
             loadDiary();
